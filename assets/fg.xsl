@@ -5,6 +5,10 @@
 
 	<xsl:template match="/">
 		<menu>
+			<xsl:attribute name="time">
+		<xsl:value-of
+				select="/html/body//div[@class='vnitrek-tisk' and position() = 1]/p[1]/b" />
+		</xsl:attribute>
 			<xsl:apply-templates
 				select="//table[@class='tb_jidelak' and position() = 1]/tbody/tr[1]/td"
 				mode="days" />

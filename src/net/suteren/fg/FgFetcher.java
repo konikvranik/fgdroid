@@ -26,6 +26,7 @@ import android.content.res.Resources;
 
 public class FgFetcher {
 
+	
 	public Node getFgMenu() throws IOException, TransformerException,
 			ParserConfigurationException {
 		// TODO Auto-generated method stub
@@ -45,7 +46,7 @@ public class FgFetcher {
 
 		Document d = t.parseDOM(is, null);
 		TransformerFactory tf = TransformerFactory.newInstance();
-		InputStream inXsl = Resources.getSystem().openRawResource(R.xml.fg);
+		InputStream inXsl = Resources.getSystem().openRawResource(1);
 		StreamSource xslStream = new StreamSource(inXsl);
 		Transformer tr = tf.newTransformer(xslStream);
 		DOMResult res = new DOMResult(DocumentBuilderFactory.newInstance()

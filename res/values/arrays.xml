@@ -1,0 +1,10 @@
+<resources>
+	<string-array name="week_url">
+		<item >http://fgkavcihory.cateringmelodie.cz/cz/samoobsluzna-restaurace/denni-menu-tisk.php</item>
+		<item >http://fgkavcihory.cateringmelodie.cz/cz/samoobsluzna-restaurace/denni-menu-pristi-tyden-tisk.php</item>
+	</string-array>
+	<string-array name="week_file">
+		<item >this_week</item>
+		<item >next_week</item>
+	</string-array>
+</resources>
