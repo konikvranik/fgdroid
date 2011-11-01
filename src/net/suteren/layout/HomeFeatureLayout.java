@@ -54,7 +54,6 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 		Display display = ((WindowManager) getContext().getSystemService(
 				Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int width = display.getWidth();
-		int x = 0;
 		Calendar now = Calendar.getInstance();
 		for (DayMenu item : items) {
 
@@ -78,11 +77,6 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 
 			int c = now.compareTo(item.getDate());
 			Log.d("HomeFeatureLayout", "comp: " + c);
-			if (c < 0 && mActiveFeature == 0) {
-				mActiveFeature = x;
-				Log.d("HomeFeatureLayout", "Match: " + x);
-			}
-			x++;
 		}
 		Log.d("HomeFeatureLayout", "Scroll to: " + mActiveFeature);
 
@@ -115,7 +109,9 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 			int c = now.compareTo(item.getDate());
 			Log.d("HomeFeatureLayout", "comp: " + c);
 			if (c < 0) {
-				mActiveFeature = x;
+				mActiveFeature = x - 1;
+				if (mActiveFeature < 0)
+					mActiveFeature = 0;
 				Log.d("HomeFeatureLayout", "Match: " + x);
 				result = true;
 				break;
