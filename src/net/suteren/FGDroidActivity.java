@@ -1,66 +1,86 @@
 package net.suteren;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import net.suteren.domain.DayMenu;
+import net.suteren.fg.FGManager;
+import net.suteren.fg.FileLocker;
+import net.suteren.fg.Locker;
+import net.suteren.layout.HomeFeatureLayout;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
 
 public class FGDroidActivity extends Activity {
 
 	Resources res;
+	Locker locker;
 
-	ArrayList<DayMenu> days = new ArrayList<DayMenu>();
-
-	private long modifiedTime = 0;
+	SortedSet<DayMenu> days = new TreeSet<DayMenu>();
+	private FGManager manager;
+	private HomeFeatureLayout hfl;
 
 	private static final String LOG_TAG = "FGDroid";
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
+		locker = new FileLocker(getFilesDir());
+		manager = new FGManager(locker);
+
 		Log.d(LOG_TAG, "Activity start");
 		res = getResources();
 
-		fetchData();
-
-		load();
+		if (!load())
+			fetchData();
 
 		redraw();
-		// setContentView(R.layout.main);
 	}
 
 	@Override
-	protected void onNewIntent(Intent intent) {
-		Log.d(LOG_TAG, "Intent 1");
-		super.onNewIntent(intent);
-		Log.d(LOG_TAG, "Intent 2");
-		load();
-		redraw();
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
 	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.refresh:
+			fetchData();
+			return true;
+		case R.id.today:
+			hfl.goToToday();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	// @Override
+	// protected void onNewIntent(Intent intent) {
+	// Log.d(LOG_TAG, "Intent 1");
+	// super.onNewIntent(intent);
+	// Log.d(LOG_TAG, "Intent 2");
+	// if (!"redraw".equals(intent.getAction())) {
+	// Log.d(LOG_TAG, "Fetching data again");
+	// fetchData();
+	// }
+	// load();
+	// redraw();
+	// }
 
 	private void fetchData() {
 		Log.d("FGDroid", "Starting service");
@@ -72,129 +92,44 @@ public class FGDroidActivity extends Activity {
 	private void redraw() {
 		Log.d(LOG_TAG, "Redraw");
 
-		HomeFeatureLayout hfl = new HomeFeatureLayout(this);
+		hfl = new HomeFeatureLayout(this);
 
 		// DayMenu dayMenu = days.get(showedDay.getTimeInMillis());
 
 		hfl.setFeatureItems(days);
 		setContentView(hfl);
+		hfl.goToToday();
 	}
 
 	private boolean load() {
 		Log.d(LOG_TAG, "Loading...");
+		boolean result = false;
 		try {
-			File fd = getFilesDir();
-			File[] files = fd.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				Log.d(LOG_TAG, "File " + i + ": " + files[i].getAbsolutePath());
-			}
-			files = fd.listFiles(new FilenameFilter() {
-				public boolean accept(File dir, String name) {
-					if (FGDroidService.LOCK_FILE_NAME.equals(name))
-						return true;
-					return false;
-				}
-			});
-
-			if (files.length == 0) {
+			if (!locker.isLocked()) {
+				result = true;
 				Log.d(LOG_TAG, "Unlocked");
-				files = fd.listFiles(new FilenameFilter() {
-					public boolean accept(File dir, String name) {
-						if (FGDroidService.LOCK_FILE_NAME.equals(name))
-							return false;
-						return true;
-					}
-				});
-				if (files.length == 0) {
-					fetchData();
-					return false;
-				}
-				Log.d(LOG_TAG, "Files: " + files.length);
-				for (File f : files) {
-					long lm = f.lastModified();
-					if (lm > modifiedTime) {
-						modifiedTime = lm;
-						fetchData();
-					}
-				}
+				// fetchData();
+
 				String[] week_files = res.getStringArray(R.array.week_file);
 				for (int i = 0; i < week_files.length; i++) {
 					Log.d(LOG_TAG, "Week file " + i);
 					try {
-						FileInputStream s = openFileInput(week_files[0]);
-						DocumentBuilder db = DocumentBuilderFactory
-								.newInstance().newDocumentBuilder();
-						Document n = db.parse(s);
-
-						XPath xp = XPathFactory.newInstance().newXPath();
-						XPathExpression xpDate = xp.compile("/menu/@time");
-						String timeString = xpDate.evaluate(n);
-
-						String[] dates = timeString.split("\\s*-\\s*");
-
-						DateFormat df = new SimpleDateFormat("d.M.y");
-						Date from = df.parse(dates[0]);
-						XPathExpression xpDay = xp.compile("/menu/day");
-						NodeList dayNodes = (NodeList) xpDay.evaluate(n,
-								XPathConstants.NODESET);
-
-						for (int j = 0; j < dayNodes.getLength(); j++) {
-							Node dayNode = dayNodes.item(j);
-
-							NamedNodeMap attrs = dayNode.getAttributes();
-							String position = attrs.getNamedItem("position")
-									.getNodeValue();
-
-							Log.d(LOG_TAG, "DayNode " + position);
-							Calendar cal = Calendar.getInstance();
-							cal.setTime(from);
-							cal.set(Calendar.HOUR, 0);
-							cal.set(Calendar.MINUTE, 0);
-							cal.set(Calendar.SECOND, 0);
-							cal.set(Calendar.MILLISECOND, 0);
-							cal.add(Calendar.DATE,
-									Integer.parseInt(position) - 1);
-							DayMenu dm = new DayMenu(cal);
-
-							NodeList foodNodes = dayNode.getChildNodes();
-							for (int k = 0; k < foodNodes.getLength(); k++) {
-
-								Node fn = foodNodes.item(k);
-								attrs = fn.getAttributes();
-								Node type = attrs.getNamedItem("type");
-								String value = type.getNodeValue();
-
-								if ("soup".equals(value)) {
-									dm.addSoup(new Soup(fn.getTextContent()));
-								} else if ("normal".equals(value)) {
-									dm.addFood(new Food(fn.getTextContent()));
-								} else if ("live".equals(value)) {
-									dm.addLive(new Live(fn.getTextContent()));
-								} else if ("superior".equals(value)) {
-									dm.addSuperior(new Superior(fn
-											.getTextContent()));
-								} else if ("pasta".equals(value)) {
-									dm.addPasta(new Pasta(fn.getTextContent()));
-								}
-
-							}
-							Log.d(LOG_TAG, dm.getDate().getTimeInMillis()
-									+ ": " + dm.toString());
-
-							days.add(dm);
-						}
+						FileInputStream fis = openFileInput(week_files[i]);
+						Log.d(LOG_TAG, "Loading file " + week_files[i]);
+						manager.load(fis, days);
 					} catch (Exception e1) {
+						result = false;
 						Log.e(LOG_TAG, "Parsing data failed.", e1);
 					}
 				}
-				return true;
+				return result;
 			} else {
 				Log.d(LOG_TAG, "Locked");
 			}
 		} catch (Exception e) {
 			Log.d(LOG_TAG, "Fail.", e);
 		}
-		return false;
+		return result;
 	}
 
 	@Override

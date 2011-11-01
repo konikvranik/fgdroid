@@ -1,11 +1,11 @@
-package net.suteren;
+package net.suteren.domain;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class DayMenu {
+public class DayMenu implements Comparable<DayMenu> {
 
 	List<Soup> soups = new ArrayList<Soup>();
 
@@ -99,5 +99,19 @@ public class DayMenu {
 		else
 			sb.append(new SimpleDateFormat("d.M.y").format(getDate().getTime()));
 		return sb.toString();
+	}
+
+	public int compareTo(DayMenu o) {
+		Calendar d1 = getDate();
+		Calendar d2 = null;
+		if (o != null)
+			d2 = o.getDate();
+		if (d1 == null && d2 == null) {
+			return 0;
+		}
+		if (d1 == null)
+			return -d2.compareTo(d1);
+		else
+			return d1.compareTo(d2);
 	}
 }

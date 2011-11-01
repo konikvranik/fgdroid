@@ -8,4 +8,6 @@
 	<string name="live">Live cooking</string>
 	<string name="superior">Superior</string>
 	<string name="pasta">Pasta bar</string>
+	<string name="refresh">Načíst data</string>
+	<string name="goToToday">Přejít na dnešek</string>
 </resources>

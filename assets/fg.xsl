@@ -25,8 +25,11 @@
 				select="../../tr[position() &gt; 2]/td[$pos = position() and normalize-space(translate(.,'&#160;', ' ')) != '']"
 				mode="normal" />
 			<xsl:apply-templates
-				select="../../../following-sibling::table[@class='tb_jidelak' and (position() = 2 or position() = 1)]/tbody/tr[2]/td[$pos = position() and normalize-space(translate(.,'&#160;', ' ')) != '']"
-				mode="extra" />
+				select="../../../following-sibling::table[@class='tb_jidelak' and ( position() = 1)]/tbody/tr[2]/td[$pos = position() and normalize-space(translate(.,'&#160;', ' ')) != '']"
+				mode="superior" />
+			<xsl:apply-templates
+				select="../../../following-sibling::table[@class='tb_jidelak' and (position() = 2 )]/tbody/tr[2]/td[$pos = position() and normalize-space(translate(.,'&#160;', ' ')) != '']"
+				mode="live" />
 			<xsl:apply-templates
 				select="../../../following-sibling::table[@class='tb_jidelak' and position() = 3]/tbody/tr[2]/td[normalize-space(translate(.,'&#160;', ' ')) != '']"
 				mode="pasta" />
@@ -46,11 +49,18 @@
 		</jidlo>
 	</xsl:template>
 
-	<xsl:template match="td" mode="extra">
-		<jidlo position="{position()}" type="extra">
+	<xsl:template match="td" mode="superior">
+		<jidlo position="{position()}" type="superior">
 			<xsl:value-of select="." />
 		</jidlo>
 	</xsl:template>
+
+	<xsl:template match="td" mode="live">
+		<jidlo position="{position()}" type="live">
+			<xsl:value-of select="." />
+		</jidlo>
+	</xsl:template>
+
 	<xsl:template match="td" mode="pasta">
 		<jidlo position="{position()}" type="pasta">
 			<xsl:value-of select="." />

@@ -1,30 +1,18 @@
 package net.suteren;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import net.suteren.fg.FGManager;
+import net.suteren.fg.FileLocker;
+import net.suteren.fg.Locker;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.tidy.Tidy;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -44,9 +32,12 @@ public class FGDroidService extends IntentService {
 
 	private static final int HELLO_ID = 1;
 	private static final String LOG_TAG = "FGDroid";
-	public static final String LOCK_FILE_NAME = ".lock";
+
 	private ContextWrapper context;
 	private Resources res;
+
+	private Locker locker;
+	private FGManager manager;
 
 	public FGDroidService() {
 		super("FGDroidService");
@@ -54,6 +45,10 @@ public class FGDroidService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+
+		locker = new FileLocker(getFilesDir());
+		manager = new FGManager(locker);
+
 		res = getResources();
 		context = new ContextWrapper(getApplicationContext());
 		try {
@@ -65,6 +60,7 @@ public class FGDroidService extends IntentService {
 			Log.d(LOG_TAG, "Connected: " + isConnected());
 			if (isConnected()) {
 				File fd = getFilesDir();
+				boolean refresh = true;
 				for (int i = 0; i < 2; i++) {
 					final String fn = res.getStringArray(R.array.week_file)[i];
 					File[] files = fd.listFiles(new FilenameFilter() {
@@ -74,7 +70,6 @@ public class FGDroidService extends IntentService {
 							return false;
 						}
 					});
-					boolean refresh = false;
 					for (int j = 0; j < files.length; j++) {
 						long lm = files[j].lastModified();
 						Calendar now = Calendar.getInstance();
@@ -85,18 +80,26 @@ public class FGDroidService extends IntentService {
 
 					}
 					if (refresh) {
-						n = retrieve(new URL(
-								res.getStringArray(R.array.week_url)[i]));
-						save(res.getStringArray(R.array.week_file)[i], n);
+						n = manager
+								.retrieve(
+										new URL(
+												res.getStringArray(R.array.week_url)[i]),
+										getTemplate());
+						FileOutputStream fos = openFileOutput(
+								res.getStringArray(R.array.week_file)[i],
+								Context.MODE_PRIVATE);
+						manager.save(fos, n);
 					}
 				}
-				notification(res.getString(R.string.succesfull_fetch));
-				Intent i = new Intent(this, FGDroidActivity.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//				startActivity(i);
+				if (refresh)
+					notification(res.getString(R.string.succesfull_fetch));
+				// Intent i = new Intent(this, FGDroidActivity.class);
+				// i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				// i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				// i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				// | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				// i.setAction("redraw");
+				// startActivity(i);
 				// sendBroadcast(i);
 			} else {
 				Log.w(LOG_TAG, "Not connected: fetch skipped.");
@@ -104,29 +107,14 @@ public class FGDroidService extends IntentService {
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "Retrieving of FG menu failed.", e);
 		} finally {
-			deleteFile(LOCK_FILE_NAME);
-		}
-	}
-
-	private void save(String filename, Node n) throws FileNotFoundException,
-			TransformerException, TransformerConfigurationException,
-			TransformerFactoryConfigurationError, IOException {
-		try {
-			openFileOutput(LOCK_FILE_NAME, Context.MODE_PRIVATE);
-			FileOutputStream fos = openFileOutput(filename,
-					Context.MODE_PRIVATE);
-			TransformerFactory.newInstance().newTransformer()
-					.transform(new DOMSource(n), new StreamResult(fos));
-			fos.close();
-		} finally {
-			deleteFile(LOCK_FILE_NAME);
+			locker.unlock();
 		}
 	}
 
 	private void notification(String text) {
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		int icon = R.drawable.hpa;
+		int icon = R.drawable.fg;
 		CharSequence tickerText = "Hello";
 		long when = System.currentTimeMillis();
 
@@ -148,52 +136,10 @@ public class FGDroidService extends IntentService {
 		mNotificationManager.notify(HELLO_ID, notification);
 	}
 
-	public Node retrieve(URL url) throws IOException, TransformerException,
-			ParserConfigurationException {
-		HttpURLConnection con = download(url);
-		Document d = tidy(con.getInputStream(), con.getContentEncoding());
-		DOMResult res = transform(d);
-		return res.getNode();
-	}
-
-	private DOMResult transform(Document d) throws IOException,
-			TransformerConfigurationException,
-			TransformerFactoryConfigurationError, ParserConfigurationException,
-			TransformerException {
-		InputStream inXsl = getTemplate();
-		Transformer tr = TransformerFactory.newInstance().newTransformer(
-				new StreamSource(inXsl));
-		DOMResult res = new DOMResult(DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().newDocument());
-		tr.transform(new DOMSource(d), res);
-		return res;
-	}
-
 	private InputStream getTemplate() throws IOException {
 		AssetManager assets = getAssets();
 		InputStream inXsl = assets.open("fg.xsl");
 		return inXsl;
-	}
-
-	private HttpURLConnection download(URL url) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		Log.d(LOG_TAG, "response: " + con.getResponseCode());
-		int len = con.getContentLength();
-		Log.d(LOG_TAG, "Len: " + len);
-		return con;
-	}
-
-	private Document tidy(InputStream is, String enc) throws IOException {
-		Tidy t = new Tidy();
-		t.setInputEncoding(enc == null ? "cp1250" : enc);
-		t.setNumEntities(true);
-		t.setXmlOut(true);
-		t.setShowWarnings(false);
-		t.setTrimEmptyElements(true);
-		// t.setQuoteNbsp(true);
-		Document d = t.parseDOM(is, null);
-		is.close();
-		return d;
 	}
 
 	public boolean is3G() {

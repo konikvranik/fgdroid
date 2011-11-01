@@ -1,4 +1,4 @@
-package net.suteren;
+package net.suteren.domain;
 
 import android.util.Log;
 
@@ -26,6 +26,10 @@ public class Food {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public String getType() {
+		return "food";
 	}
 
 }

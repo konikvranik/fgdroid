@@ -7,4 +7,11 @@
 		<item >this_week</item>
 		<item >next_week</item>
 	</string-array>
+	<string-array name="foodTypes">
+		<item >Polévka</item>
+		<item >Hlavní chod</item>
+		<item >Live cooking</item>
+		<item >Superior</item>
+		<item >Pasta bar</item>
+	</string-array>
 </resources>
