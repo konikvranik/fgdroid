@@ -46,6 +46,12 @@ public class FGDroidActivity extends Activity {
 			fetchData();
 
 		redraw();
+
+		hfl.post(new Runnable() {
+			public void run() {
+				hfl.goToToday();
+			}
+		});
 	}
 
 	@Override
