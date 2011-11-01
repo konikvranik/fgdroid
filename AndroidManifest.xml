@@ -11,7 +11,7 @@
 		android:label="@string/app_name" >
 		<activity
 			android:label="@string/app_name"
-			android:name=".FGDroidActivity" >
+			android:name=".FGDroidActivity" android:noHistory="true" android:launchMode="singleTop">
 			<intent-filter >
 				<action android:name="android.intent.action.MAIN" />
 

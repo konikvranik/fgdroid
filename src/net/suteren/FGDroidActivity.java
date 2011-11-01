@@ -8,7 +8,7 @@ import net.suteren.domain.DayMenu;
 import net.suteren.fg.FGManager;
 import net.suteren.fg.FileLocker;
 import net.suteren.fg.Locker;
-import net.suteren.layout.HomeFeatureLayout;
+import net.suteren.layout.DayScrollableLayout;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -18,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 
 public class FGDroidActivity extends Activity {
 
@@ -27,7 +29,7 @@ public class FGDroidActivity extends Activity {
 
 	SortedSet<DayMenu> days = new TreeSet<DayMenu>();
 	private FGManager manager;
-	private HomeFeatureLayout hfl;
+	private DayScrollableLayout hfl;
 
 	private static final String LOG_TAG = "FGDroid";
 
@@ -97,13 +99,16 @@ public class FGDroidActivity extends Activity {
 
 	private void redraw() {
 		Log.d(LOG_TAG, "Redraw");
+		View mainLayout = LinearLayout.inflate(this, R.layout.main, null);
+		hfl = (DayScrollableLayout) mainLayout
+				.findViewById(R.id.dayScrollableLayout);
 
-		hfl = new HomeFeatureLayout(this);
+		// hfl = new DayScrollableLayout(this);
 
 		// DayMenu dayMenu = days.get(showedDay.getTimeInMillis());
 
 		hfl.setFeatureItems(days);
-		setContentView(hfl);
+		setContentView(mainLayout);
 		hfl.goToToday();
 	}
 
@@ -148,5 +153,14 @@ public class FGDroidActivity extends Activity {
 		a = event.getActionMasked();
 		Log.d(LOG_TAG, "ActionMasked: " + a);
 		return super.onTouchEvent(event);
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		if (hfl.isToday())
+			super.onBackPressed();
+		else
+			hfl.goToToday();
 	}
 }

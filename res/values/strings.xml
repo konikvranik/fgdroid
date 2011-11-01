@@ -2,7 +2,7 @@
 <resources>
 	<string name="hello">Hello World, FGDroidActivity! </string>
 	<string name="app_name">FGDroid</string>
-	<string name="succesfull_fetch">Data successfully fetched.</string>
+	<string name="succesfull_fetch">Data byla úspěšně načtena.</string>
 	<string name="soup">Soup</string>
 	<string name="food">Food</string>
 	<string name="live">Live cooking</string>

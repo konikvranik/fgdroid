@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import static android.text.format.DateFormat.DAY;
 
-public class HomeFeatureLayout extends HorizontalScrollView {
+public class DayScrollableLayout extends HorizontalScrollView {
 	private static final int SWIPE_MIN_DISTANCE = 5;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 300;
 
@@ -31,15 +31,15 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 	private int mActiveFeature = 0;
 	private SortedSet<DayMenu> items;
 
-	public HomeFeatureLayout(Context context, AttributeSet attrs, int defStyle) {
+	public DayScrollableLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
-	public HomeFeatureLayout(Context context, AttributeSet attrs) {
+	public DayScrollableLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public HomeFeatureLayout(Context context) {
+	public DayScrollableLayout(Context context) {
 		super(context);
 	}
 
@@ -60,7 +60,7 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 		for (DayMenu item : items) {
 
 			LinearLayout fl = (LinearLayout) LinearLayout.inflate(getContext(),
-					R.layout.main, null);
+					R.layout.day, null);
 			fl.setLayoutParams(new LayoutParams(width,
 					LayoutParams.MATCH_PARENT));
 
@@ -102,26 +102,41 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 		mGestureDetector = new GestureDetector(new MyGestureDetector());
 	}
 
-	public boolean goToToday() {
+	Integer getTodayPosition() {
 		Calendar now = Calendar.getInstance();
 		int x = 0;
-		boolean result = false;
+		int pos;
 		for (DayMenu item : items) {
-			int c = now.compareTo(item.getDate());
+			Calendar d = item.getDate();
+			d = Calendar.getInstance();
+			d.setTime(item.getDate().getTime());
+			d.add(Calendar.HOUR, -9);
+			int c = now.compareTo(d);
 			Log.d("HomeFeatureLayout", "comp: " + c);
 			if (c < 0) {
-				mActiveFeature = x - 1;
-				if (mActiveFeature < 0)
-					mActiveFeature = 0;
+				pos = x - 1;
+				if (pos < 0)
+					pos = 0;
 				Log.d("HomeFeatureLayout", "Match: " + x);
-				result = true;
-				break;
+				return pos;
 			}
 			x++;
 		}
+		return null;
+	}
+
+	public boolean isToday() {
+		return getTodayPosition() == mActiveFeature;
+	}
+
+	public boolean goToToday() {
+		Integer x = getTodayPosition();
+		if (x == null)
+			return false;
+		mActiveFeature = x;
 		Log.d("HomeFeatureLayout", "Scroll To: " + mActiveFeature);
 		smoothScrollTo(getMeasuredWidth() * mActiveFeature, 0);
-		return result;
+		return true;
 	}
 
 	private void setDate(Calendar item, View fl) {
@@ -132,12 +147,12 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 
 		tv = (TextView) fl.findViewById(R.id.dayDOW);
 
-		tv.setText(android.text.format.DateFormat.format("" + DAY + DAY + DAY+ DAY,
-				item.getTime()));
-		
-//		android.R.drawable.ic_menu_day;
-//		android.R.drawable.ic_menu_revert;
-//		android.R.drawable.ic_menu_today;
+		tv.setText(android.text.format.DateFormat.format("" + DAY + DAY + DAY
+				+ DAY, item.getTime()));
+
+		// android.R.drawable.ic_menu_day;
+		// android.R.drawable.ic_menu_revert;
+		// android.R.drawable.ic_menu_today;
 
 	}
 

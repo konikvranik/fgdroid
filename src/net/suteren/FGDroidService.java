@@ -115,18 +115,18 @@ public class FGDroidService extends IntentService {
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		int icon = R.drawable.fg;
-		CharSequence tickerText = "Hello";
+		CharSequence tickerText = text;
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, tickerText, when);
-		notification.flags = notification.flags | Notification.FLAG_AUTO_CANCEL
-				| Notification.FLAG_ONGOING_EVENT;
+		notification.flags = (notification.flags | Notification.FLAG_AUTO_CANCEL)
+				& ~Notification.FLAG_NO_CLEAR;
 		Context context = getApplicationContext();
 		CharSequence contentTitle = text;
 		CharSequence contentText = text;
 		Intent notificationIntent = new Intent(getBaseContext(),
 				FGDroidActivity.class);
-		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_HISTORY);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
 				notificationIntent, 0);
 
