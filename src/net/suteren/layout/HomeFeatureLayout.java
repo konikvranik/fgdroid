@@ -20,6 +20,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import static android.text.format.DateFormat.DAY;
+
 public class HomeFeatureLayout extends HorizontalScrollView {
 	private static final int SWIPE_MIN_DISTANCE = 5;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 300;
@@ -70,8 +72,7 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 					.getStringArray(R.array.foodTypes).length; i++) {
 				ll.expandGroup(i);
 			}
-			View tv = fl.findViewById(R.id.dayDate);
-			setDate(item.getDate(), (TextView) tv);
+			setDate(item.getDate(), fl);
 
 			internalWrapper.addView(fl);
 
@@ -123,10 +124,21 @@ public class HomeFeatureLayout extends HorizontalScrollView {
 		return result;
 	}
 
-	private void setDate(Calendar item, TextView tv) {
+	private void setDate(Calendar item, View fl) {
+		TextView tv = (TextView) fl.findViewById(R.id.dayDate);
 		DateFormat fo = android.text.format.DateFormat
 				.getLongDateFormat(getContext());
 		tv.setText(fo.format(item.getTime()));
+
+		tv = (TextView) fl.findViewById(R.id.dayDOW);
+
+		tv.setText(android.text.format.DateFormat.format("" + DAY + DAY + DAY+ DAY,
+				item.getTime()));
+		
+//		android.R.drawable.ic_menu_day;
+//		android.R.drawable.ic_menu_revert;
+//		android.R.drawable.ic_menu_today;
+
 	}
 
 	class MyGestureDetector extends SimpleOnGestureListener {
