@@ -1,5 +1,7 @@
 package net.suteren.layout;
 
+import static android.text.format.DateFormat.DAY;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.SortedSet;
@@ -20,8 +22,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import static android.text.format.DateFormat.DAY;
-
 public class DayScrollableLayout extends HorizontalScrollView {
 	private static final int SWIPE_MIN_DISTANCE = 5;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 300;
@@ -30,6 +30,7 @@ public class DayScrollableLayout extends HorizontalScrollView {
 	private GestureDetector mGestureDetector;
 	private int mActiveFeature = 0;
 	private SortedSet<DayMenu> items;
+	private View todayIndicator;
 
 	public DayScrollableLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -41,6 +42,11 @@ public class DayScrollableLayout extends HorizontalScrollView {
 
 	public DayScrollableLayout(Context context) {
 		super(context);
+	}
+
+	public void setTodayIndicator(View v) {
+		todayIndicator = v;
+		todayIndicator.setVisibility(View.INVISIBLE);
 	}
 
 	public void setFeatureItems(SortedSet<DayMenu> items) {
@@ -92,6 +98,7 @@ public class DayScrollableLayout extends HorizontalScrollView {
 					mActiveFeature = ((scrollX + (featureWidth / 2)) / featureWidth);
 					int scrollTo = mActiveFeature * featureWidth;
 					smoothScrollTo(scrollTo, 0);
+					toggleToday();
 					return true;
 				} else {
 					return false;
@@ -135,7 +142,30 @@ public class DayScrollableLayout extends HorizontalScrollView {
 		mActiveFeature = x;
 		Log.d("HomeFeatureLayout", "Scroll To: " + mActiveFeature);
 		smoothScrollTo(getMeasuredWidth() * mActiveFeature, 0);
+		toggleToday();
 		return true;
+	}
+
+	private void toggleToday() {
+		if (isToday()) {
+			if (todayIndicator instanceof TextView) {
+				Calendar now = Calendar.getInstance();
+				Calendar trigger = Calendar.getInstance();
+				trigger.set(Calendar.HOUR, 15);
+				trigger.set(Calendar.MINUTE, 0);
+				trigger.set(Calendar.SECOND, 0);
+				trigger.set(Calendar.MILLISECOND, 0);
+
+				if (now.compareTo(trigger) > 0) {
+					((TextView) todayIndicator).setText(getResources().getString(R.string.today));
+				} else {
+					((TextView) todayIndicator).setText(getResources().getString(R.string.tomorrow));
+				}
+			}
+			todayIndicator.setVisibility(View.VISIBLE);
+		} else {
+			todayIndicator.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	private void setDate(Calendar item, View fl) {
@@ -167,6 +197,11 @@ public class DayScrollableLayout extends HorizontalScrollView {
 					mActiveFeature = (mActiveFeature < (mItems.size() - 1)) ? mActiveFeature + 1
 							: mItems.size() - 1;
 					smoothScrollTo(mActiveFeature * featureWidth, 0);
+					if (isToday()) {
+						todayIndicator.setVisibility(View.VISIBLE);
+					} else {
+						todayIndicator.setVisibility(View.INVISIBLE);
+					}
 					return true;
 				}
 				// left to right
@@ -176,6 +211,11 @@ public class DayScrollableLayout extends HorizontalScrollView {
 					mActiveFeature = (mActiveFeature > 0) ? mActiveFeature - 1
 							: 0;
 					smoothScrollTo(mActiveFeature * featureWidth, 0);
+					if (isToday()) {
+						todayIndicator.setVisibility(View.VISIBLE);
+					} else {
+						todayIndicator.setVisibility(View.INVISIBLE);
+					}
 					return true;
 				}
 			} catch (Exception e) {
@@ -193,5 +233,7 @@ public class DayScrollableLayout extends HorizontalScrollView {
 	public void scrollTo(int position) {
 		mActiveFeature = position;
 		smoothScrollTo(getMeasuredWidth() * mActiveFeature, 0);
+		toggleToday();
 	}
+
 }

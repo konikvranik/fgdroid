@@ -2,6 +2,7 @@ package net.suteren;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Calendar;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -48,6 +49,8 @@ public class FGDroidActivity extends Activity {
 		if (!load())
 			fetchData();
 
+		checkDataFreshness();
+
 		redraw();
 
 		hfl.post(new Runnable() {
@@ -55,6 +58,24 @@ public class FGDroidActivity extends Activity {
 				hfl.goToToday();
 			}
 		});
+	}
+
+	private void checkDataFreshness() {
+		if (days == null || days.size() < 1)
+			load();
+		if (days == null)
+			return;
+		Calendar cal = Calendar.getInstance();
+		int dow = cal.get(Calendar.DAY_OF_WEEK);
+		cal.add(Calendar.DATE, -dow);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DATE, 7);
+		if (cal.compareTo(days.last().getDate()) > 0) {
+			fetchData();
+		}
 	}
 
 	@Override
@@ -112,6 +133,7 @@ public class FGDroidActivity extends Activity {
 		hfl = (DayScrollableLayout) mainLayout
 				.findViewById(R.id.dayScrollableLayout);
 
+		hfl.setTodayIndicator(mainLayout.findViewById(R.id.today));
 		// hfl = new DayScrollableLayout(this);
 
 		// DayMenu dayMenu = days.get(showedDay.getTimeInMillis());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="hello">Hello World, FGDroidActivity! </string>
-	<string name="app_name">FGDroid</string>
+	<string name="app_name">Food Garden Kavčí hory</string>
 	<string name="succesfull_fetch">Data byla úspěšně načtena.</string>
 	<string name="soup">Soup</string>
 	<string name="food">Food</string>
@@ -10,4 +10,6 @@
 	<string name="pasta">Pasta bar</string>
 	<string name="refresh">Načíst data</string>
 	<string name="goToToday">Přejít na dnešek</string>
+	<string name="today">dnes</string>
+	<string name="tomorrow">zítra</string>
 </resources>
