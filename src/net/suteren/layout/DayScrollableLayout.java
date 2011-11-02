@@ -79,7 +79,6 @@ public class DayScrollableLayout extends HorizontalScrollView {
 			int c = now.compareTo(item.getDate());
 			Log.d("HomeFeatureLayout", "comp: " + c);
 		}
-		Log.d("HomeFeatureLayout", "Scroll to: " + mActiveFeature);
 
 		setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -185,5 +184,14 @@ public class DayScrollableLayout extends HorizontalScrollView {
 			}
 			return false;
 		}
+	}
+
+	public int getPosition() {
+		return mActiveFeature;
+	}
+
+	public void scrollTo(int position) {
+		mActiveFeature = position;
+		smoothScrollTo(getMeasuredWidth() * mActiveFeature, 0);
 	}
 }

@@ -8,7 +8,7 @@ public class Food {
 	protected String text;
 
 	public Food(String name) {
-		Log.d("Food", "Creating instance " + getClass().getName() + ": " + name);
+//		Log.d("Food", "Creating instance " + getClass().getName() + ": " + name);
 		text = name;
 	}
 

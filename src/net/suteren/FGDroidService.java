@@ -85,9 +85,13 @@ public class FGDroidService extends IntentService {
 										new URL(
 												res.getStringArray(R.array.week_url)[i]),
 										getTemplate());
-						FileOutputStream fos = openFileOutput(
-								res.getStringArray(R.array.week_file)[i],
-								Context.MODE_PRIVATE);
+						File cd = getCacheDir();
+						cd = new File(cd,
+								res.getStringArray(R.array.week_file)[i]);
+						FileOutputStream fos = new FileOutputStream(cd);
+						// FileOutputStream fos = openFileOutput(
+						// res.getStringArray(R.array.week_file)[i],
+						// Context.MODE_PRIVATE);
 						manager.save(fos, n);
 					}
 				}
@@ -126,7 +130,9 @@ public class FGDroidService extends IntentService {
 		CharSequence contentText = text;
 		Intent notificationIntent = new Intent(getBaseContext(),
 				FGDroidActivity.class);
-		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NO_HISTORY);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+				| Intent.FLAG_ACTIVITY_NO_HISTORY
+				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
 				notificationIntent, 0);
 

@@ -1,5 +1,6 @@
 package net.suteren;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -100,6 +101,14 @@ public class FGDroidActivity extends Activity {
 	private void redraw() {
 		Log.d(LOG_TAG, "Redraw");
 		View mainLayout = LinearLayout.inflate(this, R.layout.main, null);
+		final Integer pos;
+
+		if (hfl != null) {
+			Log.d(LOG_TAG, "HFL not null");
+			pos = hfl.getPosition();
+		} else
+			pos = null;
+
 		hfl = (DayScrollableLayout) mainLayout
 				.findViewById(R.id.dayScrollableLayout);
 
@@ -108,8 +117,17 @@ public class FGDroidActivity extends Activity {
 		// DayMenu dayMenu = days.get(showedDay.getTimeInMillis());
 
 		hfl.setFeatureItems(days);
+		if (pos != null) {
+			Log.d(LOG_TAG, "Draw - Scrolling to: " + pos);
+
+			hfl.post(new Runnable() {
+				public void run() {
+					hfl.scrollTo(pos);
+				}
+			});
+		}
+
 		setContentView(mainLayout);
-		hfl.goToToday();
 	}
 
 	private boolean load() {
@@ -125,7 +143,13 @@ public class FGDroidActivity extends Activity {
 				for (int i = 0; i < week_files.length; i++) {
 					Log.d(LOG_TAG, "Week file " + i);
 					try {
-						FileInputStream fis = openFileInput(week_files[i]);
+
+						File cd = getCacheDir();
+						cd = new File(cd,
+								res.getStringArray(R.array.week_file)[i]);
+						FileInputStream fis = new FileInputStream(cd);
+
+						// FileInputStream fis = openFileInput(week_files[i]);
 						Log.d(LOG_TAG, "Loading file " + week_files[i]);
 						manager.load(fis, days);
 					} catch (Exception e1) {
@@ -133,7 +157,6 @@ public class FGDroidActivity extends Activity {
 						Log.e(LOG_TAG, "Parsing data failed.", e1);
 					}
 				}
-				return result;
 			} else {
 				Log.d(LOG_TAG, "Locked");
 			}
@@ -141,6 +164,21 @@ public class FGDroidActivity extends Activity {
 			Log.d(LOG_TAG, "Fail.", e);
 		}
 		return result;
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		Log.d(LOG_TAG, "New intent1 hfl: " + hfl);
+		Log.d(LOG_TAG, "New intent position: " + hfl.getPosition());
+		super.onNewIntent(intent);
+		Log.d(LOG_TAG, "New intent2 hfl: " + hfl);
+		Log.d(LOG_TAG, "New intent position: " + hfl.getPosition());
+
+		load();
+
+		redraw();
+
 	}
 
 	@Override

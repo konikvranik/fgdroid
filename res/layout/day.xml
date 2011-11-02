@@ -5,7 +5,6 @@
 	android:orientation="vertical"
 	android:padding="4dp" >
 
-	
 	<LinearLayout
 		android:id="@+id/linearLayout1"
 		android:layout_width="match_parent"
@@ -32,10 +31,18 @@
 			android:textAppearance="?android:attr/textAppearanceSmall" />
 	</LinearLayout>
 
-	<ExpandableListView
-		android:id="@+id/dayContent"
+	<LinearLayout
+		android:id="@+id/linearLayout2"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content" >
-	</ExpandableListView>
+		android:layout_height="wrap_content"
+		android:fadingEdge="vertical" >
+
+		<ExpandableListView
+			android:id="@+id/dayContent"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+		</ExpandableListView>
+		
+	</LinearLayout>
 
 </LinearLayout>
