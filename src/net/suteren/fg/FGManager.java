@@ -32,7 +32,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import net.suteren.R;
 import net.suteren.domain.DayMenu;
 import net.suteren.domain.Food;
 import net.suteren.domain.Live;
@@ -46,8 +45,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 import org.xml.sax.SAXException;
-
-import android.util.Log;
 
 public class FGManager {
 

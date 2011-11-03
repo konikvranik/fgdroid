@@ -5,19 +5,79 @@
 	android:orientation="vertical" >
 
 	<TextView
-		android:id="@+id/textView1"
+		android:id="@+id/app_name"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_gravity="center"
 		android:gravity="center"
-		android:text="@string/Version"
-		android:textAppearance="?android:attr/textAppearanceMedium" />
-
-	<TextView
-		android:id="@+id/textView2"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:text="@string/versionNo"
+		android:text="@string/app_name"
 		android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="horizontal"
+		android:padding="8sp" >
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:padding="4sp"
+			android:text="@string/Version"
+			android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		<TextView
+			android:id="@+id/version"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:padding="4sp"
+			android:text="@string/versionNo"
+			android:textAppearance="?android:attr/textAppearanceSmall" />
+	</LinearLayout>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:fadingEdge="vertical"
+		android:fillViewport="true" >
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="8sp" >
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/disclaimerLabel"
+				android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:autoLink="all"
+				android:linksClickable="true"
+				android:padding="8sp"
+				android:text="@string/disclaimerText"
+				android:textAppearance="?android:attr/textAppearanceSmall" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/usageLabel"
+				android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="8sp"
+				android:text="@string/usage"
+				android:textAppearance="?android:attr/textAppearanceSmall" />
+		</LinearLayout>
+	</ScrollView>
 
 </LinearLayout>

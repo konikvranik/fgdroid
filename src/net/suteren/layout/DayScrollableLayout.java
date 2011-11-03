@@ -118,7 +118,7 @@ public class DayScrollableLayout extends HorizontalScrollView {
 			Calendar d = item.getDate();
 			d = Calendar.getInstance();
 			d.setTime(item.getDate().getTime());
-			d.add(Calendar.HOUR, DAY_HOURS - TRIGGER_HOUR);
+			d.add(Calendar.HOUR_OF_DAY, TRIGGER_HOUR - DAY_HOURS);
 			int c = now.compareTo(d);
 			Log.d("HomeFeatureLayout", "comp: " + c);
 			if (c < 0) {
@@ -152,7 +152,11 @@ public class DayScrollableLayout extends HorizontalScrollView {
 		if (isToday()) {
 			if (todayIndicator instanceof TextView) {
 				Calendar now = Calendar.getInstance();
-				if (now.get(Calendar.HOUR) < TRIGGER_HOUR) {
+				Log.d(this.getClass().getName(),
+						"Hodina: " + now.get(Calendar.HOUR_OF_DAY) + ", "
+								+ TRIGGER_HOUR + " ... "
+								+ (now.get(Calendar.HOUR_OF_DAY) < TRIGGER_HOUR));
+				if (now.get(Calendar.HOUR_OF_DAY) < TRIGGER_HOUR) {
 					((TextView) todayIndicator).setText(getResources()
 							.getString(R.string.today));
 				} else {
