@@ -23,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DayScrollableLayout extends HorizontalScrollView {
+	private static final int DAY_HOURS = 24;
+	private static final int TRIGGER_HOUR = 15;
 	private static final int SWIPE_MIN_DISTANCE = 5;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 300;
 
@@ -116,7 +118,7 @@ public class DayScrollableLayout extends HorizontalScrollView {
 			Calendar d = item.getDate();
 			d = Calendar.getInstance();
 			d.setTime(item.getDate().getTime());
-			d.add(Calendar.HOUR, -9);
+			d.add(Calendar.HOUR, DAY_HOURS - TRIGGER_HOUR);
 			int c = now.compareTo(d);
 			Log.d("HomeFeatureLayout", "comp: " + c);
 			if (c < 0) {
@@ -150,16 +152,12 @@ public class DayScrollableLayout extends HorizontalScrollView {
 		if (isToday()) {
 			if (todayIndicator instanceof TextView) {
 				Calendar now = Calendar.getInstance();
-				Calendar trigger = Calendar.getInstance();
-				trigger.set(Calendar.HOUR, 15);
-				trigger.set(Calendar.MINUTE, 0);
-				trigger.set(Calendar.SECOND, 0);
-				trigger.set(Calendar.MILLISECOND, 0);
-
-				if (now.compareTo(trigger) > 0) {
-					((TextView) todayIndicator).setText(getResources().getString(R.string.today));
+				if (now.get(Calendar.HOUR) < TRIGGER_HOUR) {
+					((TextView) todayIndicator).setText(getResources()
+							.getString(R.string.today));
 				} else {
-					((TextView) todayIndicator).setText(getResources().getString(R.string.tomorrow));
+					((TextView) todayIndicator).setText(getResources()
+							.getString(R.string.tomorrow));
 				}
 			}
 			todayIndicator.setVisibility(View.VISIBLE);

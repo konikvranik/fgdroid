@@ -73,7 +73,7 @@ public class FGDroidActivity extends Activity {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.add(Calendar.DATE, 7);
-		if (cal.compareTo(days.last().getDate()) > 0) {
+		if (days.isEmpty() || cal.compareTo(days.last().getDate()) > 0) {
 			fetchData();
 		}
 	}
@@ -94,23 +94,13 @@ public class FGDroidActivity extends Activity {
 		case R.id.today:
 			hfl.goToToday();
 			return true;
+		case R.id.about:
+			startActivity(new Intent(this, AboutActivity.class));
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	// @Override
-	// protected void onNewIntent(Intent intent) {
-	// Log.d(LOG_TAG, "Intent 1");
-	// super.onNewIntent(intent);
-	// Log.d(LOG_TAG, "Intent 2");
-	// if (!"redraw".equals(intent.getAction())) {
-	// Log.d(LOG_TAG, "Fetching data again");
-	// fetchData();
-	// }
-	// load();
-	// redraw();
-	// }
 
 	private void fetchData() {
 		Log.d("FGDroid", "Starting service");

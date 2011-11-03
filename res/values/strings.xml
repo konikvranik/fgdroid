@@ -12,4 +12,7 @@
 	<string name="goToToday">Přejít na dnešek</string>
 	<string name="today">dnes</string>
 	<string name="tomorrow">zítra</string>
+	<string name="versionNo">1.4</string>
+	<string name="about">O aplikaci</string>
+	<string name="Version">Verze</string>
 </resources>
