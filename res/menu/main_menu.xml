@@ -10,7 +10,11 @@
 		android:id="@+id/today"
 		android:icon="@android:drawable/ic_menu_today"
 		android:title="@string/goToToday"></item>
-
+	<item
+		android:id="@+id/preferences"
+		android:icon="@android:drawable/ic_menu_preferences"
+		android:title="@string/preferences"></item>
+		
 	<item
 		android:id="@+id/about"
 		android:icon="@android:drawable/ic_menu_help"

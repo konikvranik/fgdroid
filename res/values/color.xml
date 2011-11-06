@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="today">#f0F0</color>
 
-	
+	<color name="today">#f0F0</color>
+	<color name="soup">#A25C1F</color>
+	<color name="food">#fca8</color>
+	<color name="superior">#ff00</color>
+	<color name="live">#faf0</color>
+	<color name="pasta">#fc84</color>
+	<color name="vegetarian">#f7c4</color>
+	<color name="cold">#f8cf</color>
+	<color name="none">#0000</color>
+
 </resources>

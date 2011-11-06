@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
 	android:orientation="vertical" >
 
 	<TextView
@@ -24,9 +24,9 @@
 		android:textColor="@color/today" />
 
 	<net.suteren.layout.DayScrollableLayout
-		android:id="@+id/dayScrollableLayout"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:id="@+id/dayScrollableLayout1"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
 		android:fadingEdge="none"
 		android:fillViewport="true" >
 	</net.suteren.layout.DayScrollableLayout>

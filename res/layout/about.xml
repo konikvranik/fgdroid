@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
 	android:orientation="vertical" >
 
 	<TextView
 		android:id="@+id/app_name"
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:gravity="center"
@@ -14,7 +14,7 @@
 		android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<LinearLayout
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center"
 		android:orientation="horizontal"
@@ -39,25 +39,25 @@
 	</LinearLayout>
 
 	<ScrollView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
 		android:fadingEdge="vertical"
 		android:fillViewport="true" >
 
 		<LinearLayout
-			android:layout_width="match_parent"
+			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:padding="8sp" >
 
 			<TextView
-				android:layout_width="match_parent"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:text="@string/disclaimerLabel"
 				android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			<TextView
-				android:layout_width="match_parent"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:autoLink="all"
 				android:linksClickable="true"
@@ -66,13 +66,13 @@
 				android:textAppearance="?android:attr/textAppearanceSmall" />
 
 			<TextView
-				android:layout_width="match_parent"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:text="@string/usageLabel"
 				android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			<TextView
-				android:layout_width="match_parent"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:padding="8sp"
 				android:text="@string/usage"

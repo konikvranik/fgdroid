@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:padding="4dp"
-	android:textAppearance="?android:attr/textAppearanceMedium" >
+	android:orientation="horizontal" >
 
-</TextView>
+	<View
+		android:id="@+id/ribon"
+		android:layout_width="4dp"
+		android:layout_height="fill_parent"
+		android:layout_marginRight="8dp"
+		android:background="@color/food" />
+
+	<TextView
+		android:id="@+id/text"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:padding="4dp"
+		android:textAppearance="?android:attr/textAppearanceMedium" >
+	</TextView>
+
+</LinearLayout>

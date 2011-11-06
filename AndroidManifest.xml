@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="net.suteren"
-	android:versionCode="9"
+	android:versionCode="15"
 	android:versionName="@string/versionNo" >
 
-	<uses-sdk android:minSdkVersion="10" />
+	<uses-sdk android:minSdkVersion="8" />
 
 	<application
 		android:icon="@drawable/fg"
@@ -13,24 +13,22 @@
 			android:clearTaskOnLaunch="true"
 			android:label="@string/app_name"
 			android:launchMode="singleTop"
-			android:name=".FGDroidActivity">
+			android:name=".FGDroidActivity" >
 			<intent-filter >
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-
-			<activity
+		<activity
 			android:label="@string/app_name"
-			android:name=".AboutActivity">
-			<intent-filter >
-				<action android:name="android.intent.action.MAIN" />
-
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
+			android:name=".AboutActivity" >
 		</activity>
-		
+		<activity
+			android:label="@string/app_name"
+			android:name=".Preferences" >
+		</activity>
+
 		<service
 			android:label="@string/app_name"
 			android:name=".FGDroidService" >

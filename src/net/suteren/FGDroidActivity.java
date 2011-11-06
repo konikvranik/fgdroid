@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -32,6 +31,7 @@ public class FGDroidActivity extends Activity {
 	SortedSet<DayMenu> days = new TreeSet<DayMenu>();
 	private FGManager manager;
 	private DayScrollableLayout hfl;
+	private boolean goToToday = false;
 
 	private static final String LOG_TAG = "FGDroid";
 
@@ -53,11 +53,7 @@ public class FGDroidActivity extends Activity {
 
 		redraw();
 
-		hfl.post(new Runnable() {
-			public void run() {
-				hfl.goToToday();
-			}
-		});
+		goToToday = true;
 	}
 
 	private void checkDataFreshness() {
@@ -72,7 +68,7 @@ public class FGDroidActivity extends Activity {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-		cal.add(Calendar.DATE, 7);
+		cal.add(Calendar.DATE, 5);
 		if (days.isEmpty() || cal.compareTo(days.last().getDate()) > 0) {
 			fetchData();
 		}
@@ -94,6 +90,10 @@ public class FGDroidActivity extends Activity {
 		case R.id.today:
 			hfl.goToToday();
 			return true;
+		case R.id.preferences:
+			Intent intent = new Intent(this, Preferences.class);
+			startActivity(intent);
+			return true;
 		case R.id.about:
 			startActivity(new Intent(this, AboutActivity.class));
 			return true;
@@ -109,9 +109,10 @@ public class FGDroidActivity extends Activity {
 		startService(service);
 	}
 
-	private void redraw() {
+	void redraw() {
 		Log.d(LOG_TAG, "Redraw");
-		View mainLayout = LinearLayout.inflate(this, R.layout.main, null);
+		View mainLayout = LinearLayout
+				.inflate(this, R.layout.main_layout, null);
 		final Integer pos;
 
 		if (hfl != null) {
@@ -121,7 +122,10 @@ public class FGDroidActivity extends Activity {
 			pos = null;
 
 		hfl = (DayScrollableLayout) mainLayout
-				.findViewById(R.id.dayScrollableLayout);
+				.findViewById(R.id.dayScrollableLayout1);
+
+		Log.d(LOG_TAG, "hfl: " + hfl);
+		Log.d(LOG_TAG, "main: " + mainLayout);
 
 		hfl.setTodayIndicator(mainLayout.findViewById(R.id.today));
 		// hfl = new DayScrollableLayout(this);
@@ -180,7 +184,6 @@ public class FGDroidActivity extends Activity {
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		// TODO Auto-generated method stub
 		Log.d(LOG_TAG, "New intent1 hfl: " + hfl);
 		Log.d(LOG_TAG, "New intent position: " + hfl.getPosition());
 		super.onNewIntent(intent);
@@ -194,23 +197,26 @@ public class FGDroidActivity extends Activity {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		int a = event.getAction();
-		Log.d(LOG_TAG, "Action: " + a);
-		a = event.getActionIndex();
-		Log.d(LOG_TAG, "ActionIndex: " + a);
-		a = event.getActionMasked();
-		Log.d(LOG_TAG, "ActionMasked: " + a);
-		return super.onTouchEvent(event);
-	}
-
-	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		if (hfl.isToday())
 			super.onBackPressed();
 		else
 			hfl.goToToday();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.d(getClass().getName(), "Resume");
+		redraw();
+		if (goToToday) {
+			hfl.post(new Runnable() {
+				public void run() {
+					hfl.goToToday();
+				}
+			});
+
+		}
+		goToToday = false;
 	}
 }

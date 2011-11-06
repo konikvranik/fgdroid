@@ -3,16 +3,22 @@
 
 	<string name="app_name">Food Garden menu</string>
 	<string name="succesfull_fetch">Data byla úspěšně načtena.</string>
-	<string name="soup">Soup</string>
-	<string name="food">Food</string>
+	<string name="soup">Polévka</string>
+	<string name="food">Hlavní chod</string>
 	<string name="live">Live cooking</string>
 	<string name="superior">Superior</string>
+	<string name="triggerHour">Zlomová hodina</string>
+	<string name="vegetarian">Vegetariánské</string>
+	<string name="cold">Studené</string>
+	<string name="ok">Ok</string>
+	<string name="reset">Obnovit výchozí nastavení</string>
+	<string name="cancel">Storno</string>
 	<string name="pasta">Pasta bar</string>
 	<string name="refresh">Načíst data</string>
 	<string name="goToToday">Přejít na dnešek</string>
 	<string name="today">dnes</string>
-	<string name="tomorrow">zítra</string>
-	<string name="versionNo">1.7</string>
+	<string name="tomorrow">další</string>
+	<string name="versionNo">1.9</string>
 	<string name="about">O aplikaci</string>
 	<string name="Version">Verze</string>
 	<string name="disclaimerText">Aplikace stahuje data z webu
@@ -20,5 +26,6 @@
 	<string name="disclaimerLabel">Vyrozumění</string>
 	<string name="usageLabel">Použití</string>
 	<string name="usage">Po stažení aktuálních dat nedojde k jejich okamžitému zobrazení, ale zobrazí se notifikace. Aby byla zobrazena, je nutno kliknout na tuto notifikaci nebo ukončit aplikaci a znovu ji spustit. K aktualizaci by mělo dojít automaticky v případě že ještě nejsou stažena žádná data nebo chybí menu pro následující týden. Také je možné vyvolat aktualizaci dat ručně položkou v nabídce.\nTlačítko zpět ukončí aplikaci v případě že je zobrazeno aktuální menu. V ostatních případech způsobí přesun na aktuální menu a teprve následujícím stiskem dojde k ukončení aplikace.</string>
+	<string name="preferences">Nastavení</string>
 
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<item format="integer" name="triggerHour" type="integer">15</item>
+	<item format="integer" name="triggerMinute" type="integer">0</item>
+
+</resources>

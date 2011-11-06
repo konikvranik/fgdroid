@@ -9,6 +9,8 @@ import java.util.SortedSet;
 import net.suteren.R;
 import net.suteren.domain.DayMenu;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -23,16 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DayScrollableLayout extends HorizontalScrollView {
-	private static final int DAY_HOURS = 24;
-	private static final int TRIGGER_HOUR = 15;
 	private static final int SWIPE_MIN_DISTANCE = 5;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 300;
 
 	private SortedSet<DayMenu> mItems = null;
 	private GestureDetector mGestureDetector;
 	private int mActiveFeature = 0;
-	private SortedSet<DayMenu> items;
 	private View todayIndicator;
+	private int triggerHour;
+	private int triggerMinute;
 
 	public DayScrollableLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -52,7 +53,14 @@ public class DayScrollableLayout extends HorizontalScrollView {
 	}
 
 	public void setFeatureItems(SortedSet<DayMenu> items) {
-		this.items = items;
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getContext());
+		triggerHour = prefs.getInt("triggerHour",
+				getResources().getInteger(R.integer.triggerHour));
+		triggerMinute = prefs.getInt("triggerMinute", getResources()
+				.getInteger(R.integer.triggerMinute));
+		Log.d(getClass().getName(), "Trigger hour: " + triggerHour + ":"
+				+ triggerMinute);
 		LinearLayout internalWrapper = new LinearLayout(getContext());
 		internalWrapper.setLayoutParams(new LayoutParams(
 				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
@@ -69,8 +77,7 @@ public class DayScrollableLayout extends HorizontalScrollView {
 
 			LinearLayout fl = (LinearLayout) LinearLayout.inflate(getContext(),
 					R.layout.day, null);
-			fl.setLayoutParams(new LayoutParams(width,
-					LayoutParams.MATCH_PARENT));
+			fl.setLayoutParams(new LayoutParams(width, LayoutParams.FILL_PARENT));
 
 			ExpandableListView ll = (ExpandableListView) fl
 					.findViewById(R.id.dayContent);
@@ -114,15 +121,16 @@ public class DayScrollableLayout extends HorizontalScrollView {
 		Calendar now = Calendar.getInstance();
 		int x = 0;
 		int pos;
-		for (DayMenu item : items) {
+		for (DayMenu item : mItems) {
 			Calendar d = item.getDate();
 			d = Calendar.getInstance();
 			d.setTime(item.getDate().getTime());
-			d.add(Calendar.HOUR_OF_DAY, TRIGGER_HOUR - DAY_HOURS);
+			d.set(Calendar.HOUR_OF_DAY, triggerHour);
+			d.set(Calendar.MINUTE, triggerMinute);
 			int c = now.compareTo(d);
 			Log.d("HomeFeatureLayout", "comp: " + c);
 			if (c < 0) {
-				pos = x - 1;
+				pos = x;
 				if (pos < 0)
 					pos = 0;
 				Log.d("HomeFeatureLayout", "Match: " + x);
@@ -152,11 +160,26 @@ public class DayScrollableLayout extends HorizontalScrollView {
 		if (isToday()) {
 			if (todayIndicator instanceof TextView) {
 				Calendar now = Calendar.getInstance();
-				Log.d(this.getClass().getName(),
-						"Hodina: " + now.get(Calendar.HOUR_OF_DAY) + ", "
-								+ TRIGGER_HOUR + " ... "
-								+ (now.get(Calendar.HOUR_OF_DAY) < TRIGGER_HOUR));
-				if (now.get(Calendar.HOUR_OF_DAY) < TRIGGER_HOUR) {
+				Calendar c = Calendar.getInstance();
+				DateFormat df = android.text.format.DateFormat
+						.getDateFormat(getContext());
+				DateFormat tf = android.text.format.DateFormat
+						.getTimeFormat(getContext());
+
+				DayMenu item = mItems.toArray(new DayMenu[0])[getTodayPosition()];
+				c.setTime(item.getDate().getTime());
+				now.set(Calendar.HOUR_OF_DAY, 0);
+				now.set(Calendar.MINUTE, 0);
+
+				Log.d(getClass().getName(),
+						"now: " + df.format(now.getTime()) + " "
+								+ tf.format(now.getTime()) + " day: "
+								+ df.format(c.getTime()) + " "
+								+ tf.format(c.getTime()));
+
+				int comp = now.compareTo(c);
+				Log.d(getClass().getName(), "comp: " + comp);
+				if (comp > 0) {
 					((TextView) todayIndicator).setText(getResources()
 							.getString(R.string.today));
 				} else {
