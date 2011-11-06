@@ -70,7 +70,7 @@
 
 		<Preference
 			android:key="triggerHour"
-			android:summary="Nastavit původní hodnoty"
+			android:summary="Nastavit hodinu kdy se začne zobrazovat menu pro příští den"
 			android:title="@string/triggerHour" >
 		</Preference>
 	</PreferenceCategory>
