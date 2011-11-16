@@ -130,7 +130,7 @@ public class Preferences extends PreferenceActivity {
 		}
 	}
 
-	private int getColorByFoodType(String key) {
+	private Integer getColorByFoodType(String key) {
 		if ("soup".equals(key)) {
 			return R.color.soup;
 		} else if ("food".equals(key)) {
@@ -141,13 +141,12 @@ public class Preferences extends PreferenceActivity {
 			return R.color.superior;
 		} else if ("pasta".equals(key)) {
 			return R.color.pasta;
-		} else if ("cild".equals(key)) {
+		} else if ("cold".equals(key)) {
 			return R.color.cold;
 		} else if ("vegetarian".equals(key)) {
 			return R.color.vegetarian;
 		}
-		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 }
