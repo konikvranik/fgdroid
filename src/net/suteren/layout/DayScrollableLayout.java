@@ -142,7 +142,10 @@ public class DayScrollableLayout extends HorizontalScrollView {
 	}
 
 	public boolean isToday() {
-		return getTodayPosition() == mActiveFeature;
+		Integer pos = getTodayPosition();
+		if (pos == null)
+			return false;
+		return pos == mActiveFeature;
 	}
 
 	public boolean goToToday() {

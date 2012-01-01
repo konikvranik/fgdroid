@@ -30,7 +30,7 @@ public class FGDroidActivity extends Activity {
 
 	SortedSet<DayMenu> days = new TreeSet<DayMenu>();
 	private FGManager manager;
-	private DayScrollableLayout hfl;
+	private DayScrollableLayout dayScrollableLayout;
 	private boolean goToToday = false;
 
 	private static final String LOG_TAG = "FGDroid";
@@ -88,7 +88,7 @@ public class FGDroidActivity extends Activity {
 			fetchData();
 			return true;
 		case R.id.today:
-			hfl.goToToday();
+			dayScrollableLayout.goToToday();
 			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(this, Preferences.class);
@@ -115,30 +115,30 @@ public class FGDroidActivity extends Activity {
 				.inflate(this, R.layout.main_layout, null);
 		final Integer pos;
 
-		if (hfl != null) {
+		if (dayScrollableLayout != null) {
 			Log.d(LOG_TAG, "HFL not null");
-			pos = hfl.getPosition();
+			pos = dayScrollableLayout.getPosition();
 		} else
 			pos = null;
 
-		hfl = (DayScrollableLayout) mainLayout
+		dayScrollableLayout = (DayScrollableLayout) mainLayout
 				.findViewById(R.id.dayScrollableLayout1);
 
-		Log.d(LOG_TAG, "hfl: " + hfl);
+		Log.d(LOG_TAG, "hfl: " + dayScrollableLayout);
 		Log.d(LOG_TAG, "main: " + mainLayout);
 
-		hfl.setTodayIndicator(mainLayout.findViewById(R.id.today));
+		dayScrollableLayout.setTodayIndicator(mainLayout.findViewById(R.id.today));
 		// hfl = new DayScrollableLayout(this);
 
 		// DayMenu dayMenu = days.get(showedDay.getTimeInMillis());
 
-		hfl.setFeatureItems(days);
+		dayScrollableLayout.setFeatureItems(days);
 		if (pos != null) {
 			Log.d(LOG_TAG, "Draw - Scrolling to: " + pos);
 
-			hfl.post(new Runnable() {
+			dayScrollableLayout.post(new Runnable() {
 				public void run() {
-					hfl.scrollTo(pos);
+					dayScrollableLayout.scrollTo(pos);
 				}
 			});
 		}
@@ -184,11 +184,11 @@ public class FGDroidActivity extends Activity {
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		Log.d(LOG_TAG, "New intent1 hfl: " + hfl);
-		Log.d(LOG_TAG, "New intent position: " + hfl.getPosition());
+		Log.d(LOG_TAG, "New intent1 hfl: " + dayScrollableLayout);
+		Log.d(LOG_TAG, "New intent position: " + dayScrollableLayout.getPosition());
 		super.onNewIntent(intent);
-		Log.d(LOG_TAG, "New intent2 hfl: " + hfl);
-		Log.d(LOG_TAG, "New intent position: " + hfl.getPosition());
+		Log.d(LOG_TAG, "New intent2 hfl: " + dayScrollableLayout);
+		Log.d(LOG_TAG, "New intent position: " + dayScrollableLayout.getPosition());
 
 		load();
 
@@ -198,10 +198,10 @@ public class FGDroidActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		if (hfl.isToday())
+		if (dayScrollableLayout.isToday())
 			super.onBackPressed();
 		else
-			hfl.goToToday();
+			dayScrollableLayout.goToToday();
 	}
 
 	@Override
@@ -210,9 +210,9 @@ public class FGDroidActivity extends Activity {
 		Log.d(getClass().getName(), "Resume");
 		redraw();
 		if (goToToday) {
-			hfl.post(new Runnable() {
+			dayScrollableLayout.post(new Runnable() {
 				public void run() {
-					hfl.goToToday();
+					dayScrollableLayout.goToToday();
 				}
 			});
 
